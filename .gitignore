@@ -1,0 +1,5 @@
+.env
+seen.db
+corpcode_cache.xml
+__pycache__/
+*.pyc
