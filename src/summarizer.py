@@ -129,6 +129,7 @@ def summarize_all(items: list[dict]) -> list[dict]:
                 "summary": [f"요약 실패 ({type(e).__name__})",
                             "python3 diagnose.py 로 원인 확인하세요."],
                 "impact": reason[:160],
+                "summary_failed": True,
             })
     return out
 

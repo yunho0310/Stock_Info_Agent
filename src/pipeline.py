@@ -53,7 +53,10 @@ def run():
 
     if new_items:
         if email_ok:
-            store.mark_sent(new_items)
+            done = [r for r in results if not r.get("summary_failed")]
+            store.mark_sent(done)
+            if len(done) < len(results):
+                print(f"  ⚠️  요약 실패 {len(results) - len(done)}건은 기록하지 않음 (다음 실행 때 재시도)")
         else:
             print("  ⚠️  메일 발송 실패 → 발송 기록을 남기지 않음 (다음 실행 때 재시도)")
     print("✔ 완료")
