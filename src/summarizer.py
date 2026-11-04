@@ -118,7 +118,7 @@ def summarize_one(item: dict) -> dict:
         print(f"  ⚠️  태그 형식 오류({item['corp_name']}): {parsed.get('tag')!r}")
         parsed["tag"] = "분석실패"
         parsed["summary_failed"] = True
-    return {**item, **parsed}
+    return {**parsed, **item}
 
 
 def summarize_all(items: list[dict]) -> list[dict]:
