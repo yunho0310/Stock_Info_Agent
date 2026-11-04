@@ -66,7 +66,10 @@ def render(results: list[dict],
             for it in items:
                 emoji = TAG_EMOJI.get(it.get("tag", "중립"), "⚪")
                 lines.append(f"  {emoji} {it['report_nm']}  [{it.get('tag','중립')}]")
-                for s in it.get("summary", []):
+                summary = it.get("summary", [])
+                if isinstance(summary, str):   # LLM 이 목록 대신 문장 하나로 준 경우
+                    summary = [summary]
+                for s in summary:
                     lines.append(f"     - {s}")
                 lines.append(f"     · 예상 영향: {it.get('impact','-')}")
                 lines.append(f"     · 원문: {it['url']}")
