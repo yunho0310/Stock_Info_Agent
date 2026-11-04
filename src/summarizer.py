@@ -31,6 +31,8 @@ SYSTEM_PROMPT = """너는 한국 주식 투자자를 돕는 공시 분석 어시
 
 {"tag": "호재|악재|중립", "summary": ["문장1", "문장2", "문장3"], "impact": "예상 주가 영향 한 줄"}"""
 
+VALID_TAGS = ("호재", "악재", "중립")
+
 
 def _build_user_prompt(item: dict, body: str | None) -> str:
     base = (
@@ -111,7 +113,11 @@ def summarize_one(item: dict) -> dict:
     try:
         parsed = json.loads(text)
     except json.JSONDecodeError:
-        parsed = {"tag": "중립", "summary": [text[:200]], "impact": "분석 형식 오류"}
+        parsed = {"summary": [text[:200]], "impact": "분석 형식 오류"}
+    if parsed.get("tag") not in VALID_TAGS:
+        print(f"  ⚠️  태그 형식 오류({item['corp_name']}): {parsed.get('tag')!r}")
+        parsed["tag"] = "분석실패"
+        parsed["summary_failed"] = True
     return {**item, **parsed}
 
 
@@ -125,7 +131,7 @@ def summarize_all(items: list[dict]) -> list[dict]:
             print(f"  ⚠️  요약 실패({it['corp_name']}) → {reason}")
             out.append({
                 **it,
-                "tag": "중립",
+                "tag": "분석실패",
                 "summary": [f"요약 실패 ({type(e).__name__})",
                             "python3 diagnose.py 로 원인 확인하세요."],
                 "impact": reason[:160],

@@ -14,7 +14,7 @@ import requests
 
 import config
 
-TAG_EMOJI = {"호재": "🔵", "악재": "🔴", "중립": "⚪"}
+TAG_EMOJI = {"호재": "🔵", "악재": "🔴", "중립": "⚪", "분석실패": "⚠️"}
 
 
 def _fmt_quote(corp: str, q: dict | None) -> str:
@@ -52,6 +52,9 @@ def render(results: list[dict],
         highlights = [r for r in results if r.get("tag") in ("호재", "악재")]
         head = (f"주목할 공시 {len(highlights)}건"
                 if highlights else "중립성 공시 위주")
+        failed = sum(1 for r in results if r.get("tag") == "분석실패")
+        if failed:
+            head += f" (분석실패 {failed}건)"
         lines.append(f"▶ 신규 공시: {head}")
         lines.append("")
 
