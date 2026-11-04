@@ -48,11 +48,14 @@ def run():
     subject, body = notifier.render(results, quotes=quotes,
                                     holdings_meta=holdings_meta, news=news)
     print("\n" + body + "\n")
-    notifier.send_email(subject, body)
+    email_ok = notifier.send_email(subject, body)
     notifier.send_kakao(body)
 
     if new_items:
-        store.mark_sent(new_items)
+        if email_ok:
+            store.mark_sent(new_items)
+        else:
+            print("  ⚠️  메일 발송 실패 → 발송 기록을 남기지 않음 (다음 실행 때 재시도)")
     print("✔ 완료")
 
 
